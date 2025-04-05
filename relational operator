@@ -1,0 +1,28 @@
+%{
+#include<stdio.h>
+%}
+
+%%
+
+[a-zA-Z]+     { printf("\n%s is a WORD", yytext); }
+
+"=="          { printf("\n%s is a RELATIONAL OPERATOR", yytext); }
+"!="          { printf("\n%s is a RELATIONAL OPERATOR", yytext); }
+"<="          { printf("\n%s is a RELATIONAL OPERATOR", yytext); }
+">="          { printf("\n%s is a RELATIONAL OPERATOR", yytext); }
+"<"           { printf("\n%s is a RELATIONAL OPERATOR", yytext); }
+">"           { printf("\n%s is a RELATIONAL OPERATOR", yytext); }
+
+[ \t\n]       { /* Ignore */ }
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    printf("Enter input: ");
+    yylex();
+    return 0;
+}
