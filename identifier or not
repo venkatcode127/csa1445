@@ -1,0 +1,16 @@
+%{
+#include<stdio.h>
+%}
+
+%%
+
+[a-zA-Z][a-zA-Z0-9]+ {printf("\n%s is IDENTIFIER",yytext);}
+.+ {printf("\n%s is NOT IDENTIFIER",yytext);}
+
+%%
+int yywrap(){}
+int main()
+
+{    printf("Enter the input for identifier: \n")
+        while(yylex());
+}
