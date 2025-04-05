@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX 10
+
+char productions[MAX][MAX];
+char first[MAX][MAX], follow[MAX][MAX];
+char nonTerminals[MAX];
+int numProductions, numNonTerminals = 0;
+
+void addToSet(char set[], char value) {
+    int i;
+    for (i = 0; set[i] != '\0'; i++)
+        if (set[i] == value)
+            return;
+    set[i] = value;
+    set[i + 1] = '\0';
+}
+
+void computeFirst(char symbol, char result[]) {
+    if (!isupper(symbol)) {  
+        addToSet(result, symbol);
+        return;
+    }
+
+    for (int i = 0; i < numProductions; i++) {
+        if (productions[i][0] == symbol) {
+            if (!isupper(productions[i][2])) {
+                addToSet(result, productions[i][2]);
+            } else {
+                computeFirst(productions[i][2], result);
+            }
+        }
+    }
+}
+
+void computeFollow(char symbol, char result[]) {
+    if (symbol == productions[0][0]) { 
+        addToSet(result, '$');
+    }
+
+    for (int i = 0; i < numProductions; i++) {
+        for (int j = 2; productions[i][j] != '\0'; j++) {
+            if (productions[i][j] == symbol) {
+                if (productions[i][j + 1] != '\0') {
+                    char firstOfNext[MAX] = "";
+                    computeFirst(productions[i][j + 1], firstOfNext);
+
+                    for (int k = 0; firstOfNext[k] != '\0'; k++) {
+                        if (firstOfNext[k] != 'e') {
+                            addToSet(result, firstOfNext[k]);
+                        }
+                    }
+                }
+
+                if (productions[i][j + 1] == '\0' || strchr(first[productions[i][j + 1] - 'A'], 'e')) {
+                    if (productions[i][0] != symbol) {
+                        computeFollow(productions[i][0], result);
+                        strcat(result, follow[productions[i][0] - 'A']);
+                    }
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    printf("Enter the number of productions: ");
+    scanf("%d", &numProductions);
+
+    printf("Enter the productions (e.g., S=AB):\n");
+    for (int i = 0; i < numProductions; i++) {
+        scanf("%s", productions[i]);
+        if (!strchr(nonTerminals, productions[i][0])) {
+            nonTerminals[numNonTerminals++] = productions[i][0];
+        }
+    }
+
+    for (int i = 0; i < numNonTerminals; i++) {
+        computeFirst(nonTerminals[i], first[i]);
+    }
+    for (int i = 0; i < numNonTerminals; i++) {
+        computeFollow(nonTerminals[i], follow[i]);
+    }
+
+    printf("\nFOLLOW sets:\n");
+    for (int i = 0; i < numNonTerminals; i++) {
+        printf("FOLLOW(%c) = { %s }\n", nonTerminals[i], follow[i]);
+    }
+
+    return 0;
+}
