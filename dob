@@ -1,0 +1,16 @@
+%{
+#include<stdio.h>
+%}
+
+%%
+
+[0-3][0-9][/0-1][0-9][/0-9 0-9 0-9 0-9]+ {printf("\n%s is Valid date",yytext);}
+.+ {printf("\n%s is NOT Valid Date",yytext);}
+
+%%
+int yywrap(){}
+int main()
+
+{
+        while(yylex());
+}
