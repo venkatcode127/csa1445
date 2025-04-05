@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX_RULES 10
+#define MAX_SYMBOLS 10
+char productions[MAX_RULES][MAX_SYMBOLS];
+int numRules;
+void eliminateLeftFactoring();
+int main() {
+    printf("Enter number of productions: ");
+    scanf("%d", &numRules);
+    printf("Enter productions:\n");
+    for (int i = 0; i < numRules; i++) {
+        scanf("%s", productions[i]);
+    }
+    eliminateLeftFactoring();
+    
+    return 0;
+}
+void eliminateLeftFactoring() {
+    printf("\nEliminating Left Factoring...\n");
+    for (int i = 0; i < numRules; i++) {
+        char nonTerminal = productions[i][0];
+        char commonPrefix[MAX_SYMBOLS], remaining1[MAX_SYMBOLS], remaining2[MAX_SYMBOLS];
+        int j = 3, k = 0;
+        while (productions[i][j] != '|' && productions[i][j] != '\0') {
+            commonPrefix[k++] = productions[i][j++];
+        }
+        commonPrefix[k] = '\0';
+        if (productions[i][j] == '|') {
+            j++;
+            k = 0;
+            while (productions[i][j] != '\0') {
+                remaining1[k++] = productions[i][j++];
+            }
+            remaining1[k] = '\0';
+            printf("%c -> %s%c'\n", nonTerminal, commonPrefix, nonTerminal);
+            printf("%c' -> %s | e\n", nonTerminal, remaining1);
+        } else {
+            printf("%s\n", productions[i]);
+        }
+    }
+}
