@@ -1,0 +1,14 @@
+%{
+%}
+%%
+if|else|while|int|switch|for { printf("\n%s is a keyword", yytext); }
+[a-zA-Z0-9]+ { printf(" \n%s is IDENTIFIER", yytext); }
+%%
+int yywrap(void) { return 1; }
+
+int main()
+{
+    printf("\nenter the string : ");
+    yylex();
+    return 0;
+}

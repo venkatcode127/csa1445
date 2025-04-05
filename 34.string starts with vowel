@@ -1,0 +1,23 @@
+%{
+#include<stdio.h>
+%}
+
+%%
+
+[aeiouAEIOU][a-zA-Z0-9]* { printf("\n%s starts with a vowel", yytext); }
+
+[a-zA-Z0-9]+             { printf("\n%s does NOT start with a vowel", yytext); }
+
+[ \t\n]                  { /* Ignore */ }
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    printf("Enter input: ");
+    yylex();
+    return 0;
+}

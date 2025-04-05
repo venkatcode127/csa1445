@@ -1,0 +1,24 @@
+%{
+#include<stdio.h>
+%}
+
+%%
+
+[a-zA-Z]+     { printf("\n%s is a WORD", yytext); }
+
+[0-9]+        { printf("\n%s is a NUMBER", yytext); }
+[0-9]+\.[0-9]+ { printf("\n%s is a DECIMAL NUMBER", yytext); }
+
+[ \t\n]       { /* Ignore */ }
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    printf("Enter a statement: ");
+    yylex();
+    return 0;
+}

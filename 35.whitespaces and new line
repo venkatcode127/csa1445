@@ -1,0 +1,28 @@
+%{
+#include<stdio.h>
+
+int whitespace_count = 0;  
+int newline_count = 0;    
+%}
+
+%%
+
+[ \t]    { whitespace_count++; }
+
+\n       { newline_count++; }
+
+.        { /* Ignore other characters */ }
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    printf("Enter input (Ctrl+D to end input on Linux/Mac, Ctrl+Z on Windows):\n");
+    yylex();
+    printf("\nTotal Whitespaces: %d", whitespace_count);
+    printf("\nTotal Newline Characters: %d\n", newline_count);
+    return 0;
+}
