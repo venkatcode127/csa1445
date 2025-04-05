@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+char input[100];
+int pos = 0;
+
+void E();
+void EPrime();
+void T();
+void TPrime();
+void F();
+
+void match(char expected) {
+    if (input[pos] == expected) {
+        pos++;
+    } else {
+        printf("Syntax Error at position %d: Expected '%c'\n", pos, expected);
+        exit(0);
+    }
+}
+
+void E() {
+    T();
+    EPrime();
+}
+
+void EPrime() {
+    if (input[pos] == '+') {
+        match('+');
+        T();
+        EPrime();
+    }
+}
+
+void T() {
+    F();
+    TPrime();
+}
+
+void TPrime() {
+    if (input[pos] == '*') {
+        match('*');
+        F();
+        TPrime();
+    }
+}
+
+void F() {
+    if (input[pos] == '(') {
+        match('(');
+        E();
+        match(')');
+    } else if (isalnum(input[pos])) {
+        while (isalnum(input[pos])) 
+            match(input[pos]);
+    } else {
+        printf("Syntax Error at position %d: Unexpected character '%c'\n", pos, input[pos]);
+        exit(0);
+    }
+}
+
+int main() {
+    printf("Enter an arithmetic expression: ");
+    scanf("%s", input);
+
+    E();
+
+    if (input[pos] == '\0') {
+        printf("The input string is a valid expression.\n");
+    } else {
+        printf("Syntax Error at position %d: Unexpected trailing characters.\n", pos);
+    }
+
+    return 0;
+}
