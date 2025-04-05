@@ -1,0 +1,88 @@
+c#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX 10
+
+void findFirst(char[], char);
+void addToResultSet(char[], char);
+
+int numProductions;
+char productionSet[MAX][MAX];
+
+int main() {
+    int i;
+    char choice;
+    char firstSet[MAX];
+    char c;
+
+    printf("Enter the number of productions: ");
+    scanf("%d", &numProductions);
+    
+    printf("Enter the productions (e.g., A=Bc|d):\n");
+    for (i = 0; i < numProductions; i++) {
+        scanf("%s", productionSet[i]);
+    }
+    
+    do {
+        printf("\nFind FIRST of: ");
+        scanf(" %c", &c);
+        
+        findFirst(firstSet, c);
+        
+        printf("FIRST(%c) = { ", c);
+        for (i = 0; firstSet[i] != '\0'; i++) {
+            printf("%c ", firstSet[i]);
+        }
+        printf("}\n");
+        
+        printf("Do you want to continue (y/n)? ");
+        scanf(" %c", &choice);
+    } while (choice == 'y' || choice == 'Y');
+    
+    return 0;
+}
+
+void findFirst(char* resultSet, char c) {
+    int i, j;
+    char subResult[MAX];
+    int foundEpsilon;
+    
+    resultSet[0] = '\0';
+    
+    if (!isupper(c)) { // Terminal
+        addToResultSet(resultSet, c);
+        return;
+    }
+    
+    for (i = 0; i < numProductions; i++) {
+        if (productionSet[i][0] == c) {
+            for (j = 2; productionSet[i][j] != '\0'; j++) {
+                findFirst(subResult, productionSet[i][j]);
+                foundEpsilon = 0;
+                for (int k = 0; subResult[k] != '\0'; k++) {
+                    if (subResult[k] != 'e') {
+                        addToResultSet(resultSet, subResult[k]);
+                    } else {
+                        foundEpsilon = 1;
+                    }
+                }
+                if (!foundEpsilon) break;
+            }
+            if (productionSet[i][j] == '\0' || foundEpsilon) {
+                addToResultSet(resultSet, 'e');
+            }
+        }
+    }
+}
+
+void addToResultSet(char resultSet[], char val) {
+    int i;
+    for (i = 0; resultSet[i] != '\0'; i++) {
+        if (resultSet[i] == val) {
+            return;
+        }
+    }
+    resultSet[i] = val;
+    resultSet[i + 1] = '\0';
+}
